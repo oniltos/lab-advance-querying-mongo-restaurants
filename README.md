@@ -1,12 +1,12 @@
 ![logo_ironhack_blue 7](https://user-images.githubusercontent.com/23629340/40541063-a07a0a8a-601a-11e8-91b5-2f13e4e6b441.png)
 
-# MongoDB | Compass CRUD
+# MongoDB | Compass CRUD Restaurants
 
 ## Introduction
 
 We are back with our queries! :wink:
 
-We have learned some super useful query operators that will helps us to make much better queries to retrieve the data we need. For this lab, we will be using the **Crunchbase** database. Please keep reading and work on the following iterations.
+We have learned some super useful query operators that will helps us to make much better queries to retrieve the data we need. For this lab, we will be using the **MongoDB Restaurants Sample** database. Please keep reading and work on the following iterations.
 
 ## Requirements
 
@@ -27,13 +27,13 @@ $ git push origin master
 
 ## Deliverables
 
-Since we will be querying our database from Mongo Compass, you will need to copy/paste the `query`, `projection`, `sort`, `skip` and `limit` you entered on Mongo Compass. In the `queries.md` file, you will find the instructions about the queries you need to do, and a field to fill the answers.
+Since we will be querying our database from Mongo Compass, you will need to copy/paste the `filter`, `projection`, `sort`, `skip` and `limit` you entered on Mongo Compass. In the `queries.md` file, you will find the instructions about the queries you need to do, and a field to fill the answers.
 
 ### Example
 
 1. This is an example
 
-- **`query`**: /_You should copy/paste the query in here_/
+- **`filter`**: /_You should copy/paste the filter in here_/
 - **`projection`**: /_You should copy/paste the projection in here_/
 - **`sort`**: /_You should copy/paste the sort in here_/
 - **`skip`**: /_You should copy/paste the skip in here_/
@@ -43,11 +43,65 @@ Since we will be querying our database from Mongo Compass, you will need to copy
 
 ### Iteration 1
 
-First, we need to import the database we will be using for the `lab`. We will use the Crunchbase database. Crunchbase is the premier destination for discovering industry trends, investments, and news about hundreds of thousands of companies globally. From startups to Fortune 500s, Crunchbase is recognized as the primary source of company intelligence by millions of users globally.
+First, we need to import the database we will be using for the `lab`. We will use a MongoDB sample database that contains 
+data about restaurants in New York. The dataset contains restaurants' name, address, cuisine type, and grades among other properties.
 
-The database contains more than 18k documents. Each document holds the data about each of the companies. A document looks like the following:
+The database contains more than 25k documents. Each document holds the data about each of the restaurants. A document looks like the following:
 
-![image](https://user-images.githubusercontent.com/23629340/36494916-d6db1770-1733-11e8-903e-5119b3c1b688.png)
+```json
+{
+  "address": {
+    "building": "1007",
+    "coord": [
+      -73.856077,
+      40.848447
+    ],
+    "street": "Morris Park Ave",
+    "zipcode": "10462"
+  },
+  "borough": "Bronx",
+  "cuisine": "Bakery",
+  "grades": [
+    {
+      "date": {
+        "$date": 1393804800000
+      },
+      "grade": "A",
+      "score": 2
+    },
+    {
+      "date": {
+        "$date": 1378857600000
+      },
+      "grade": "A",
+      "score": 6
+    },
+    {
+      "date": {
+        "$date": 1358985600000
+      },
+      "grade": "A",
+      "score": 10
+    },
+    {
+      "date": {
+        "$date": 1322006400000
+      },
+      "grade": "A",
+      "score": 9
+    },
+    {
+      "date": {
+        "$date": 1299715200000
+      },
+      "grade": "B",
+      "score": 14
+    }
+  ],
+  "name": "Morris Park Bake Shop",
+  "restaurant_id": "30075445"
+}
+```
 
 1. You will find the `.zip` file of the database on the **lab** folder.
 2. Unzip the file
@@ -56,39 +110,42 @@ The database contains more than 18k documents. Each document holds the data abou
 **When running the `mongoimport` you should be located in the same folder as the `data.json` file.**
 
 ```bash
-$ mongoimport --db companiesDB --collection companies --file data.json
+$ mongoimport --db restaurantsDB --collection restaurants --drop --file data.json
 ```
 
-What this mongoimport will do for us is to create a database named _companiesDB_, and inside the database will create a collection named _companies_ which will be fed with _data.json_.
+What this mongoimport will do for us is to create a database named _restaurantsDB_, and inside the database will create a collection named _restaurants_ which will be fed with _data.json_.
 
 _Side note_: In case errors or hanging with no response when running this command, add [--jsonArray](https://docs.mongodb.com/manual/reference/program/mongoimport/#cmdoption-mongoimport-jsonarray) at the end of the previous command.
 
-4. Check on Mongo Compass if everything goes ok:
-
-![image](https://user-images.githubusercontent.com/23629340/36534191-1f1bc5ec-17c6-11e8-9463-4945679b98c0.png)
+4. Check on Mongo Compass if everything goes ok
 
 ### Iteration 2
 
 You already know how this goes, so let's start working:
 
-1. All the companies whose name match 'Babelgum'. Retrieve only their `name` field.
-2. All the companies that have more than 5000 employees. Limit the search to 20 companies and sort them by **number of employees**.
-3. All the companies founded between 2000 and 2005, both years included. Retrieve only the `name` and `founded_year` fields.
-4. All the companies that had a IPO Valuation Amount of more than 100.000.000 and have been founded before 2010. Retrieve only the `name` and `ipo` fields.
-5. All the companies that have less than 1000 employees and have been founded before 2005. Order them by the number of employees and limit the search to 10 companies.
-6. All the companies that don't include the `partners` field.
-7. All the companies that have a null type of value on the `category_code` field.
-8. All the companies that have at least 100 employees but less than 1000. Retrieve only the `name` and `number of employees` fields.
-9. Order all the companies by their IPO price in descending order.
-10. Retrieve the ten companies with most employees, order by the `number of employees`
-11. All the companies founded in the second semester of the year. Limit your search to 1000 companies.
-12. All the companies founded before 2000 that have an acquisition amount of more than 10.000.000
-13. All the companies that have been acquired after 2010, order by the acquisition amount, and retrieve only their `name` and `acquisition` field.
-14. Order the companies by their `founded year`, retrieving only their `name` and `founded year`.
-15. All the companies that have been founded on the first seven days of the month, including the seventh. Sort them by their `acquisition price` in descending order. Limit the search to 10 documents.
-16. All the companies on the 'web' `category` that have more than 4000 employees. Sort them by the number of employees in ascending order.
-17. All the companies whose acquisition amount is more than 10.000.000 and the currency is 'EUR'.
-18. All the companies that have been acquired in the first trimester of the year. Limit the search to 10 companies, and retrieve only their `name` and `acquisition` fields.
-19. All the companies that have been founded between 2000 and 2010, but have not been acquired before 2011.
+1. All the documents in the collection restaurants.
+2. Display the fields restaurant_id, name, borough and cuisine, but exclude the field _id for all the documents in the collection restaurant.
+3. Display the fields restaurant_id, name, borough and zip code, but exclude the field _id for all the documents in the collection restaurant.
+4. All the restaurant which is in the borough Bronx.
+5. The first 5 restaurant which is in the borough Bronx.
+6. The next 5 restaurants after skipping first 5 which are in the borough Bronx.
+7. The restaurants who achieved a score more than 90.
+8. The restaurants that achieved a score, more than 80 but less than 100.
+9. The restaurants which locate in latitude value less than -95.754168
+10. The restaurants that do not prepare any cuisine of 'American' and their grade score more than 70 and latitude less than -65.754168.
+11. The restaurants which do not prepare any cuisine of 'American' and achieved a score more than 70 and located in the longitude less than -65.754168.
+12. The restaurants which do not prepare any cuisine of 'American ' and achieved a grade point 'A' not belongs to the borough Brooklyn. The document must be displayed according to the cuisine in descending order.
+13. The restaurants which belong to the borough Bronx and prepared either American or Chinese dish.
+14. Display the restaurant_id, name, borough and cuisine for those restaurants which belong to the borough Staten Island or Queens or Bronxor Brooklyn.
+15. Display the restaurant_id, name, borough and cuisine for those restaurants which are not belonging to the borough Staten Island or Queens or Bronxor Brooklyn.
+16. Display the restaurant_id, name, borough and cuisine for those restaurants which achieved a score which is not more than 10.
+17. Display the restaurant_id, name, address and geographical location for those restaurants where 2nd element of coord array contains a value which is more than 42 and upto 52.
+18. Display the documents sorting by the name of the restaurants in ascending order along with all the columns.
+19. Display the documents sorting by the name of the restaurants in descending along with all the columns.
+20. Display the documents sorting by the name of the cuisine in ascending order and for that same cuisine borough should be in descending order.
+21. All documents in the restaurants collection where the coord field value is Double.
 
-Happy Coding! :heart:
+### Bonus queries
+
+22. Display the restaurant name, borough, longitude and attitude and cuisine for those restaurants which contains 'mon' as three letters somewhere in its name.
+23. Display the restaurant name, borough, longitude and latitude and cuisine for those restaurants which contain 'Mad' as first three letters of its name.
